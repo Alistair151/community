@@ -8,7 +8,7 @@ public class Page {
     /**
      * 当前页码
      */
-    private int current = 0;
+    private int current = 1;
     /**
      * 显示上限
      */
