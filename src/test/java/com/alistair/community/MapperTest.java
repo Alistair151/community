@@ -1,8 +1,10 @@
 package com.alistair.community;
 
 import com.alistair.community.dao.DiscussPostMapper;
+import com.alistair.community.dao.LoginTicketMapper;
 import com.alistair.community.dao.UserMapper;
 import com.alistair.community.entity.DiscussPost;
+import com.alistair.community.entity.LoginTicket;
 import com.alistair.community.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,5 +76,29 @@ public class MapperTest {
 
         int rows = discussPostMapper.selectDiscussPostRows(0);
         System.out.println(rows);
+    }
+
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+    @Test
+    public void insertLoginTicketTest(){
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(2312);
+        loginTicket.setTicket("alistair");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+
+    @Test
+    public void selectLoginTicketTest(){
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("alistair");
+        System.out.println(loginTicket);
+
+        loginTicketMapper.updateStatus("alistair", 1);
+
+        loginTicket = loginTicketMapper.selectByTicket("alistair");
+        System.out.println(loginTicket);
     }
 }

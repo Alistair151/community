@@ -17,4 +17,14 @@ public interface CommunityConstant {
      */
     int ACTIVATION_FAILURE = 2;
 
+    /**
+     * 默认登录凭证的超时时间, 12h
+     */
+    int DEFAULT_EXPIRED_SECOND = 3600 * 12;
+
+    /**
+     * 勾选记住我后的超时时间, 100days
+     */
+    int REMEMBER_EXPIRED_SECOND = 3600 * 24 * 100;
+
 }
