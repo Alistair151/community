@@ -6,6 +6,7 @@ import com.alistair.community.dao.UserMapper;
 import com.alistair.community.entity.DiscussPost;
 import com.alistair.community.entity.LoginTicket;
 import com.alistair.community.entity.User;
+import com.alistair.community.util.CommunityUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -100,5 +101,10 @@ public class MapperTest {
 
         loginTicket = loginTicketMapper.selectByTicket("alistair");
         System.out.println(loginTicket);
+    }
+
+    @Test
+    public void updatePassword(){
+        userMapper.updatePassword(166, CommunityUtil.md5("123"+"5fdb6"));
     }
 }
