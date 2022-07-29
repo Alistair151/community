@@ -105,6 +105,19 @@ public class MapperTest {
 
     @Test
     public void updatePassword(){
-        userMapper.updatePassword(166, CommunityUtil.md5("123"+"5fdb6"));
+        userMapper.updatePassword(111, CommunityUtil.md5("123"+"167f9"));
+    }
+
+    @Test
+    public void insertDiscussPostTest() {
+        DiscussPost discussPost = new DiscussPost();
+        discussPost.setUserId(166);
+        discussPost.setStatus(0);
+        discussPost.setCreateTime(new Date());
+        discussPost.setType(0);
+        discussPost.setContent("今天天气真好，我发布了一个帖子");
+        discussPost.setCommentCount(0);
+        discussPost.setScore(0);
+        discussPostMapper.insertDiscussPost(discussPost);
     }
 }

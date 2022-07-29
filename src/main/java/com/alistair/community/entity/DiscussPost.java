@@ -1,6 +1,7 @@
 package com.alistair.community.entity;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 public class DiscussPost {
 
