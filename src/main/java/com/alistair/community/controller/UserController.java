@@ -1,5 +1,6 @@
 package com.alistair.community.controller;
 
+import com.alistair.community.annotation.LoginRequired;
 import com.alistair.community.entity.User;
 import com.alistair.community.service.UserService;
 import com.alistair.community.util.CommunityUtil;
@@ -45,11 +46,13 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;
 
+    @LoginRequired
     @RequestMapping(value = "/setting", method = RequestMethod.GET)
     public String getSettingPage() {
         return "/site/setting";
     }
 
+    @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
         if(headerImage == null) {
@@ -108,6 +111,7 @@ public class UserController {
     }
 
     //修改密码，提交表单
+    @LoginRequired
     @RequestMapping(path = "/change", method = RequestMethod.POST)
     public String updatePassword(String oldPassword, String newPassword, Model model) {
         User user = hostHolder.getUsers();
