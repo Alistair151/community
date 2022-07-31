@@ -32,6 +32,7 @@ public class HomeController {
         //所以，在thymeleaf中可以直接访问Page对象中的数据
 
         //查询总的帖子的行数，所以用户id设为0
+        //帖子分页信息,其中current属性会自动从url中调用setCurrent方法传入到page对象中
         page.setRows(discussPostService.findDiscussPostRows(0));
         page.setPath("/index");
 

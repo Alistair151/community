@@ -1,5 +1,6 @@
 package com.alistair.community.controller;
 
+import com.alistair.community.entity.User;
 import com.alistair.community.service.AlphaService;
 import com.alistair.community.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,12 @@ public class AlphaController {
     public String getStudent(@PathVariable("id") int id){
         System.out.println(id);
         return "a student  " + id;
+    }
+
+    //与post同path的GET请求
+    @RequestMapping(path = "/student", method = RequestMethod.GET)
+    public String getStudentPage() {
+        return "/html/student.html";
     }
 
     // POST请求
@@ -188,5 +195,13 @@ public class AlphaController {
         System.out.println(name);
         System.out.println(age);
         return CommunityUtil.getJsonString(0,"操作成功");
+    }
+
+    //测试参数处理
+    //param/test?username=liweijia&userId=166
+    @RequestMapping(path = "/param/test", method = RequestMethod.GET)
+    @ResponseBody
+    public String paramTest(User user, int intParam) {
+        return user.getUsername() + intParam;
     }
 }

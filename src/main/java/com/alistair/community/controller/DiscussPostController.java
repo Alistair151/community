@@ -67,7 +67,7 @@ public class DiscussPostController implements CommunityConstant {
         User user = userService.findUserById(discussPost.getUserId());
         model.addAttribute("user", user);
 
-        //评论分页信息
+        //评论分页信息,其中current属性会自动从url中调用setCurrent方法传入到page对象中
         page.setLimit(5);
         page.setPath("/discuss/detail/" + discussPostId);
         page.setRows(discussPost.getCommentCount());
