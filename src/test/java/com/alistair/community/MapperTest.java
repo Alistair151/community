@@ -2,9 +2,11 @@ package com.alistair.community;
 
 import com.alistair.community.dao.DiscussPostMapper;
 import com.alistair.community.dao.LoginTicketMapper;
+import com.alistair.community.dao.MessageMapper;
 import com.alistair.community.dao.UserMapper;
 import com.alistair.community.entity.DiscussPost;
 import com.alistair.community.entity.LoginTicket;
+import com.alistair.community.entity.Message;
 import com.alistair.community.entity.User;
 import com.alistair.community.util.CommunityUtil;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,9 @@ public class MapperTest {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
 
     @Test
     public void selectTest(){
@@ -119,5 +124,29 @@ public class MapperTest {
         discussPost.setCommentCount(0);
         discussPost.setScore(0);
         discussPostMapper.insertDiscussPost(discussPost);
+    }
+
+    //测试私信
+    @Test
+    public void messageTest() {
+        List<Message> messageList = messageMapper.selectConversations(111,0,20);
+        for (Message message:messageList){
+            System.out.println(message);
+        }
+
+        int count = messageMapper.selectConversationCount(111);
+        System.out.println(count);
+
+        messageList =  messageMapper.selectLetter("111_112",0,10);
+        for (Message message:messageList){
+            System.out.println(message);
+        }
+
+        count = messageMapper.selectLetterCount("111_112");
+        System.out.println(count);
+
+
+        count = messageMapper.selectLetterUnreadCount(131,null);
+        System.out.println(count);
     }
 }
