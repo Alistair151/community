@@ -5,6 +5,7 @@ import com.alistair.community.entity.Page;
 import com.alistair.community.entity.User;
 import com.alistair.community.service.MessageService;
 import com.alistair.community.service.UserService;
+import com.alistair.community.util.CommunityUtil;
 import com.alistair.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,11 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/message")
@@ -97,6 +96,13 @@ public class MessageController {
         // 放入会话的另一端的用户
         int targetId = getLetterTargetId(conversationId);
         model.addAttribute("targetUser", userService.findUserById(targetId));
+
+        //设置已读
+        List<Integer> ids = getLetterIds(letterList);
+        if (!ids.isEmpty()) {
+            messageService.readMessage(ids);
+        }
+
         return "/site/letter-detail";
     }
 
@@ -105,6 +111,43 @@ public class MessageController {
         int id0 = Integer.parseInt(targets[0]);
         int id1 = Integer.parseInt(targets[1]);
         return hostHolder.getUsers().getId()==id0?id1:id0;
+    }
+
+    // 发送私信
+    @RequestMapping(path = "/letter/send", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendLetter(String toName, String content){
+        User user = hostHolder.getUsers();
+        User target = userService.findUserByName(toName);
+        if(target == null) {
+            return CommunityUtil.getJsonString(1, "目标用户不存在");
+        }
+        Message message = new Message();
+        message.setCreateTime(new Date());
+        message.setToId(target.getId());
+        message.setFromId(user.getId());
+        message.setContent(content);
+        message.setStatus(0);
+        message.setConversationId(getConversationId(user.getId(),target.getId()));
+        messageService.addMessage(message);
+        return CommunityUtil.getJsonString(0,"发送成功");
+    }
+
+    private String getConversationId(int id1, int id2){
+            return id1>id2?id2+"_"+id1:id1+"_"+id2;
+    }
+
+    //在一些消息列表中返回未读消息的id列表
+    private List<Integer> getLetterIds(List<Message> letterList){
+        List<Integer> ids = new ArrayList<>();
+        if(letterList != null) {
+            for (Message message : letterList) {
+                if (message.getToId() == hostHolder.getUsers().getId() && message.getStatus() == 0) {
+                    ids.add(message.getId());
+                }
+            }
+        }
+        return ids;
     }
 
 }

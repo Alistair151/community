@@ -27,6 +27,7 @@ public class MapperTest {
     @Autowired
     private MessageMapper messageMapper;
 
+
     @Test
     public void selectTest(){
         User user1 = userMapper.selectById(101);
@@ -148,5 +149,16 @@ public class MapperTest {
 
         count = messageMapper.selectLetterUnreadCount(131,null);
         System.out.println(count);
+    }
+
+    @Test
+    public void sendMessage(){
+        Message message = new Message();
+        message.setCreateTime(new Date());
+        message.setContent("haniyasiyou");
+        message.setFromId(111);
+        message.setToId(166);
+        message.setConversationId("111_166");
+        messageMapper.insertMessage(message);
     }
 }
