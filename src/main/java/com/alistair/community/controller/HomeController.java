@@ -5,6 +5,7 @@ import com.alistair.community.entity.DiscussPost;
 import com.alistair.community.entity.Page;
 import com.alistair.community.entity.User;
 import com.alistair.community.service.DiscussPostService;
+import com.alistair.community.service.LikeService;
 import com.alistair.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,9 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LikeService likeService;
 
     @RequestMapping(path = "/index", method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page){
@@ -47,6 +51,10 @@ public class HomeController {
                 map.put("post",post);
                 User user = userService.findUserById(post.getUserId());
                 map.put("user",user);
+
+                //map中放入帖子赞的数量
+                map.put("likeCount", likeService.findEntityLikeCount(1, post.getId()));
+
                 discussPosts.add(map);
             }
         }
