@@ -2,15 +2,18 @@ package com.alistair.community.controller;
 
 import com.alistair.community.annotation.LoginRequired;
 import com.alistair.community.entity.User;
+import com.alistair.community.service.LikeService;
 import com.alistair.community.service.UserService;
 import com.alistair.community.util.CommunityUtil;
 import com.alistair.community.util.HostHolder;
+import com.alistair.community.util.RedisKeyUtil;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,6 +48,9 @@ public class UserController {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
 
     @LoginRequired
     @RequestMapping(value = "/setting", method = RequestMethod.GET)
@@ -123,6 +129,21 @@ public class UserController {
         }
 
         return "redirect:/index";
+    }
+
+    // 个人主页
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String getProfile(@PathVariable("userId") int userId, Model model){
+        //个人信息
+        User user = userService.findUserById(userId);
+        model.addAttribute("user", user);
+
+        //收到的赞
+        Integer likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount", likeCount);
+
+        return "/site/profile";
+
     }
 
 }

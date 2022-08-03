@@ -25,13 +25,13 @@ public class LikeController {
    // 异步请求用post
    @RequestMapping(path = "/like", method = RequestMethod.POST)
    @ResponseBody
-   public String like(int entityType, int entityId) {
+   public String like(int entityType, int entityId, int authorId) {
        User user = hostHolder.getUsers();
        if (user == null) {
            return CommunityUtil.getJsonString(1, "用户未登录");
        }
        // 点赞
-       likeService.like(user.getId(), entityType, entityId);
+       likeService.like(user.getId(), entityType, entityId, authorId);
        // 数量
        long likeCount = likeService.findEntityLikeCount(entityType, entityId);
        // 状态
@@ -42,7 +42,6 @@ public class LikeController {
        map.put("likeStatus", likeStatus);
 
        return CommunityUtil.getJsonString(0,"成功", map);
-
 
    }
 
