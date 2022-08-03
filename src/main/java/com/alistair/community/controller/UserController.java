@@ -2,8 +2,10 @@ package com.alistair.community.controller;
 
 import com.alistair.community.annotation.LoginRequired;
 import com.alistair.community.entity.User;
+import com.alistair.community.service.FollowService;
 import com.alistair.community.service.LikeService;
 import com.alistair.community.service.UserService;
+import com.alistair.community.util.CommunityConstant;
 import com.alistair.community.util.CommunityUtil;
 import com.alistair.community.util.HostHolder;
 import com.alistair.community.util.RedisKeyUtil;
@@ -30,7 +32,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements CommunityConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -51,6 +53,9 @@ public class UserController {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     @LoginRequired
     @RequestMapping(value = "/setting", method = RequestMethod.GET)
@@ -141,6 +146,14 @@ public class UserController {
         //收到的赞
         Integer likeCount = likeService.findUserLikeCount(userId);
         model.addAttribute("likeCount", likeCount);
+
+        //关注者数量
+        long followCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followCount", followCount);
+
+        //是否被当前用户关注
+        boolean isFollow = followService.findHasFollow(hostHolder.getUsers().getId(), ENTITY_TYPE_USER, userId);
+        model.addAttribute("isFollow", isFollow);
 
         return "/site/profile";
 

@@ -22,7 +22,7 @@ public class ExceptionAdvice {
     @ExceptionHandler
     public void handleException(Exception e, HttpServletResponse response, HttpServletRequest request) throws IOException {
         // 记录日志
-        logger.error("服务器发生异常");
+        logger.error("服务器发生异常" + e.getMessage());
         for (StackTraceElement element : e.getStackTrace()) {
             logger.error(element.toString());
         }
