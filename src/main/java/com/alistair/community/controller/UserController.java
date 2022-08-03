@@ -147,12 +147,19 @@ public class UserController implements CommunityConstant {
         Integer likeCount = likeService.findUserLikeCount(userId);
         model.addAttribute("likeCount", likeCount);
 
-        //关注者数量
+        //粉丝数量
         long followCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
         model.addAttribute("followCount", followCount);
 
+        //偶像数量
+        long followeeCount = followService.findFolloweeCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followeeCount", followeeCount);
+
         //是否被当前用户关注
-        boolean isFollow = followService.findHasFollow(hostHolder.getUsers().getId(), ENTITY_TYPE_USER, userId);
+        boolean isFollow =false;
+        if (hostHolder.getUsers()!=null) {
+            isFollow = followService.findHasFollow(hostHolder.getUsers().getId(), ENTITY_TYPE_USER, userId);
+        }
         model.addAttribute("isFollow", isFollow);
 
         return "/site/profile";
