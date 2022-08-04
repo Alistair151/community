@@ -172,7 +172,7 @@ public class UserService implements CommunityConstant {
 //        loginTicketMapper.insertLoginTicket(loginTicket);
         String redisKey = RedisKeyUtil.getTicketKey(loginTicket.getTicket());
         redisTemplate.opsForValue().set(redisKey, loginTicket);
-        redisTemplate.opsForValue().getAndExpire(redisKey, expiredSecond, TimeUnit.SECONDS);
+        redisTemplate.expire(redisKey, expiredSecond, TimeUnit.SECONDS);
 
         //登陆成功后将凭证放到map中
         map.put("ticket", loginTicket.getTicket());
