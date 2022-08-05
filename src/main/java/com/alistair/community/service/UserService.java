@@ -1,6 +1,5 @@
 package com.alistair.community.service;
 
-import com.alistair.community.dao.LoginTicketMapper;
 import com.alistair.community.dao.UserMapper;
 import com.alistair.community.entity.LoginTicket;
 import com.alistair.community.entity.User;
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import javax.jws.soap.SOAPBinding;
-import javax.xml.soap.SAAJResult;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,5 @@
 package com.alistair.community.controller;
 
-import com.alistair.community.dao.DiscussPostMapper;
 import com.alistair.community.entity.DiscussPost;
 import com.alistair.community.entity.Page;
 import com.alistair.community.entity.User;

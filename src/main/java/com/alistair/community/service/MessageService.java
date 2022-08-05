@@ -3,7 +3,6 @@ package com.alistair.community.service;
 import com.alistair.community.dao.MessageMapper;
 import com.alistair.community.entity.Message;
 import com.alistair.community.util.SensitiveFilter;
-import com.sun.deploy.net.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;

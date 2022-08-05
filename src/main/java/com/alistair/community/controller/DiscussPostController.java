@@ -1,6 +1,5 @@
 package com.alistair.community.controller;
 
-import com.alistair.community.annotation.LoginRequired;
 import com.alistair.community.entity.Comment;
 import com.alistair.community.entity.DiscussPost;
 import com.alistair.community.entity.Page;
