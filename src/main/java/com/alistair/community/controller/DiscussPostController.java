@@ -62,13 +62,14 @@ public class DiscussPostController implements CommunityConstant {
     //查询帖子详情
     @RequestMapping(path = "/detail/{discussPostId}", method = RequestMethod.GET)
     public String getDiscussPost(@PathVariable("discussPostId") int discussPostId, Model model, Page page) {
+        User user = hostHolder.getUsers();
         //对与page，实体类型的参数，会自动装载到model中，不需要额外addAttribute
         // 帖子
         DiscussPost discussPost = discussPostService.findDiscussPostById(discussPostId);
         model.addAttribute("post", discussPost);
         // 作者
-        User user = userService.findUserById(discussPost.getUserId());
-        model.addAttribute("user", user);
+        User author = userService.findUserById(discussPost.getUserId());
+        model.addAttribute("user", author);
 
         // 点赞数量
         long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, discussPostId);
@@ -122,7 +123,7 @@ public class DiscussPostController implements CommunityConstant {
                         likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, reply.getId());
                         replyView.put("likeCount", likeCount);
                         // 点赞状态
-                        likeStatus = user==null?0:likeService.findEntityLikeStatus(user.getId(), ENTITY_TYPE_COMMENT, reply.getId());
+                        likeStatus = author==null?0:likeService.findEntityLikeStatus(user.getId(), ENTITY_TYPE_COMMENT, reply.getId());
                         replyView.put("likeStatus", likeStatus);
                         replyViewList.add(replyView);
                     }

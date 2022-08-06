@@ -48,7 +48,7 @@ public class EventConsumer implements CommunityConstant {
 
         //将其余的数据（什么类型，内容id等等放入content中）
         Map<String, Object> map = new HashMap<>();
-        map.put("entityTpye", event.getEntityType());
+        map.put("entityType", event.getEntityType());
         map.put("entityId", event.getEntityId());
         map.put("userId", event.getUserId());
         //还有event中data属性（可供扩展）
@@ -58,7 +58,7 @@ public class EventConsumer implements CommunityConstant {
             }
         }
         message.setContent(JSONObject.toJSONString(map));
-        messageService.addMessage(message);
+//        messageService.addMessage(message);
     }
 
 }

@@ -52,4 +52,23 @@ public class MessageService {
         return messageMapper.updateStatus(ids, 1);
     }
 
+    // 查询某个主题下最新的通知
+    public Message findLatestNotice(int userId, String topic){
+        return messageMapper.selectLatestNotice(userId, topic);
+    }
+
+    // 查询某个主题所包含的通知数量
+    public int findNoticeCount(int userId, String topic){
+        return messageMapper.selectNoticeCount(userId, topic);
+    }
+
+    // 查询未读的统治的数量
+    public int findUnreadNoticeCount(int userId, String topic){
+        return messageMapper.selectUnreadNoticeCount(userId, topic);
+    }
+
+    // 查询某一主题的所有系统消息
+    public List<Message> findNoticeList(int userId, String topic, int offset, int limit){
+        return messageMapper.selectNoticeList(userId, topic, offset, limit);
+    }
 }
