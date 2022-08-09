@@ -1,9 +1,7 @@
 package com.alistair.community.controller;
 
-import com.alistair.community.entity.Comment;
-import com.alistair.community.entity.DiscussPost;
-import com.alistair.community.entity.Page;
-import com.alistair.community.entity.User;
+import com.alistair.community.entity.*;
+import com.alistair.community.event.EventProducer;
 import com.alistair.community.service.CommentService;
 import com.alistair.community.service.DiscussPostService;
 import com.alistair.community.service.LikeService;
@@ -40,6 +38,9 @@ public class DiscussPostController implements CommunityConstant {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
     public String addDiscussPost(String title, String content) {
@@ -54,6 +55,16 @@ public class DiscussPostController implements CommunityConstant {
         discussPost.setContent(content);
         discussPost.setCreateTime(new Date());
         discussPostService.addDiscussPost(discussPost);
+
+        //在发帖子后，触发发帖事件
+        Event event = new Event();
+        event.setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUsers().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(discussPost.getId());
+
+        eventProducer.fireEvent(event);
+
 
         //报错的情况，将来统一处理
         return CommunityUtil.getJsonString(0, "发布成功");

@@ -130,11 +130,12 @@ public class ElasticsearchTest {
             System.out.println(discussPost);
             list.add(discussPost);
         }
+        System.out.println("zcount："+ searchResponse.getHits().getTotalHits().value);
     }
 
     //带高亮的查询
     @Test
-    public void highlightQuery() throws Exception{
+    public void highlightQuery(String keyword, int offset, int limit) throws Exception{
         SearchRequest searchRequest = new SearchRequest("discusspost");//discusspost是索引名，就是表名
 
         //高亮
@@ -147,12 +148,12 @@ public class ElasticsearchTest {
 
         //构建搜索条件
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
-                .query(QueryBuilders.multiMatchQuery("互联网寒冬", "title", "content"))
+                .query(QueryBuilders.multiMatchQuery(keyword, "title", "content"))
                 .sort(SortBuilders.fieldSort("type").order(SortOrder.DESC))
                 .sort(SortBuilders.fieldSort("score").order(SortOrder.DESC))
                 .sort(SortBuilders.fieldSort("createTime").order(SortOrder.DESC))
-                .from(0)// 指定从哪条开始查询
-                .size(10)// 需要查出的总记录条数
+                .from(offset)// 指定从哪条开始查询
+                .size(limit)// 需要查出的总记录条数
                 .highlighter(highlightBuilder);//高亮
 
         searchRequest.source(searchSourceBuilder);
@@ -172,8 +173,9 @@ public class ElasticsearchTest {
             if (contentField != null) {
                 discussPost.setContent(contentField.getFragments()[0].toString());
             }
-            System.out.println(discussPost);
             list.add(discussPost);
         }
     }
+
+
 }
