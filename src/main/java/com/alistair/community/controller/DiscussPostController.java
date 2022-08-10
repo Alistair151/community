@@ -73,7 +73,7 @@ public class DiscussPostController implements CommunityConstant {
     //查询帖子详情
     @RequestMapping(path = "/detail/{discussPostId}", method = RequestMethod.GET)
     public String getDiscussPost(@PathVariable("discussPostId") int discussPostId, Model model, Page page) {
-        User user = hostHolder.getUsers();
+        User me = hostHolder.getUsers();
         //对与page，实体类型的参数，会自动装载到model中，不需要额外addAttribute
         // 帖子
         DiscussPost discussPost = discussPostService.findDiscussPostById(discussPostId);
@@ -86,7 +86,7 @@ public class DiscussPostController implements CommunityConstant {
         long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, discussPostId);
         model.addAttribute("likeCount", likeCount);
         // 点赞状态
-        int likeStatus = user==null?0:likeService.findEntityLikeStatus(user.getId(), ENTITY_TYPE_POST, discussPostId);
+        int likeStatus = me==null?0:likeService.findEntityLikeStatus(me.getId(), ENTITY_TYPE_POST, discussPostId);
         model.addAttribute("likeStatus", likeStatus);
 
         //评论分页信息,其中current属性会自动从url中调用setCurrent方法传入到page对象中
@@ -112,7 +112,7 @@ public class DiscussPostController implements CommunityConstant {
                 likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, comment.getId());
                 commentView.put("likeCount", likeCount);
                 // 点赞状态
-                likeStatus = user==null?0:likeService.findEntityLikeStatus(user.getId(), ENTITY_TYPE_COMMENT, comment.getId());
+                likeStatus = me==null?0:likeService.findEntityLikeStatus(me.getId(), ENTITY_TYPE_COMMENT, comment.getId());
                 commentView.put("likeStatus", likeStatus);
 
                 //回复列表
@@ -134,7 +134,7 @@ public class DiscussPostController implements CommunityConstant {
                         likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, reply.getId());
                         replyView.put("likeCount", likeCount);
                         // 点赞状态
-                        likeStatus = author==null?0:likeService.findEntityLikeStatus(user.getId(), ENTITY_TYPE_COMMENT, reply.getId());
+                        likeStatus = me==null?0:likeService.findEntityLikeStatus(me.getId(), ENTITY_TYPE_COMMENT, reply.getId());
                         replyView.put("likeStatus", likeStatus);
                         replyViewList.add(replyView);
                     }

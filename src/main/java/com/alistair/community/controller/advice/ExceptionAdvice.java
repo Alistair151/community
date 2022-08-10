@@ -29,7 +29,7 @@ public class ExceptionAdvice {
 
         //分为同步请求与异步请求
         String type = request.getHeader("x-requested-with");
-        if(type.equals("XMLHttpRequest")) {
+        if(type!=null && type.equals("XMLHttpRequest")) {
             response.setContentType("application/plain;charset=utf-8");
             PrintWriter writer = response.getWriter();
             writer.write(CommunityUtil.getJsonString(1, "服务器异常！请联系后台工作人员"));

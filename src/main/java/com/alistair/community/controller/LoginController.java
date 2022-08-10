@@ -4,6 +4,7 @@ import com.alistair.community.entity.User;
 import com.alistair.community.service.UserService;
 import com.alistair.community.util.CommunityConstant;
 import com.alistair.community.util.CommunityUtil;
+import com.alistair.community.util.CookieUtil;
 import com.alistair.community.util.RedisKeyUtil;
 import com.google.code.kaptcha.Producer;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -136,18 +140,25 @@ public class LoginController implements CommunityConstant {
      * @param code 验证码
      * @param rememberMe 用户登录时是否点击了“记住我”
      * @param model “将参数传入前端页面时需要model”
-     * @param session “验证码存在session中”
+     * @param “验证码存在session中”
      * @param response ticket用cookie来保存，cookie有response来创建
      * @return 前端页面的路径
      */
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public String login(String username, String password, String code, boolean rememberMe,
-                        Model model,/* HttpSession session ,*/ HttpServletResponse response,
-                        @CookieValue("verificationOwner") String verificationOwner){
+    public String login(HttpServletRequest request, String username, String password, String code, boolean rememberMe,
+                        Model model,/* HttpSession session ,*/ HttpServletResponse response){
+
+        //获取验证码
+        String verificationOwner = CookieUtil.getValue(request, "verificationOwner");
 
         //检查验证码
-//        String kaptcha = (String) session.getAttribute("kaptcha");
+//      String kaptcha = (String) session.getAttribute("kaptcha");
         String kaptcha = null;
+        if(verificationOwner == null){
+            //验证码超时，刷新验证码
+            model.addAttribute("codeMsg", "验证码超时，请重新输入");
+            return "/site/login";
+        }
         if (StringUtils.isNotBlank(verificationOwner)){
             String redisKey = RedisKeyUtil.getVerificationKey(verificationOwner);
             kaptcha = (String) redisTemplate.opsForValue().get(redisKey);
@@ -183,6 +194,8 @@ public class LoginController implements CommunityConstant {
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public String logout(@CookieValue("ticket") String ticket){
         userService.logout(ticket);
+        //退出的时候将SecurityContext清理掉
+        //SecurityContextHolder.clearContext();
         //重定向时默认get请求
         return "redirect:/login";
     }
