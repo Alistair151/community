@@ -151,14 +151,16 @@ public class LoginController implements CommunityConstant {
         //获取验证码
         String verificationOwner = CookieUtil.getValue(request, "verificationOwner");
 
-        //检查验证码
-//      String kaptcha = (String) session.getAttribute("kaptcha");
-        String kaptcha = null;
         if(verificationOwner == null){
             //验证码超时，刷新验证码
             model.addAttribute("codeMsg", "验证码超时，请重新输入");
             return "/site/login";
         }
+
+        //检查验证码
+//      String kaptcha = (String) session.getAttribute("kaptcha");
+        String kaptcha = null;
+
         if (StringUtils.isNotBlank(verificationOwner)){
             String redisKey = RedisKeyUtil.getVerificationKey(verificationOwner);
             kaptcha = (String) redisTemplate.opsForValue().get(redisKey);
@@ -194,8 +196,8 @@ public class LoginController implements CommunityConstant {
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public String logout(@CookieValue("ticket") String ticket){
         userService.logout(ticket);
-        //退出的时候将SecurityContext清理掉
-        //SecurityContextHolder.clearContext();
+//        退出的时候将SecurityContext清理掉
+        SecurityContextHolder.clearContext();
         //重定向时默认get请求
         return "redirect:/login";
     }

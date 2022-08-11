@@ -257,8 +257,10 @@ public class UserService implements CommunityConstant {
                         return AUTHORITY_USER;
                     case 1:
                         return AUTHORITY_ADMIN;
-                    default:
+                    case 2:
                         return AUTHORITY_MODERATOR;
+                    default:
+                        return "null";
                 }
             }
         });

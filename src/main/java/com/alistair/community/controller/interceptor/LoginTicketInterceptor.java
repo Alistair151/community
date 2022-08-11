@@ -8,6 +8,7 @@ import com.alistair.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
 import java.util.Date;
 
 @Component
@@ -34,7 +36,6 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
         //从cookie中获取凭证
         String ticket = CookieUtil.getValue(request, "ticket");
 
-
         if (ticket != null) {
             //查询凭证
             LoginTicket loginTicket = userService.findLoginTicket(ticket);
@@ -45,10 +46,14 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
                 //在本次请求中持有用户
                 hostHolder.setUsers(user);
                 // 构建用户认证的结果,并存入SecurityContext,以便于Security进行授权.
+                Collection<? extends GrantedAuthority> type =  userService.getAuthorities(user.getId());
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        user, user.getPassword(), userService.getAuthorities(user.getId()));
+                        user, user.getPassword(), type);
                 SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
             }
+        }else {
+            //没有凭证就清空权限
+            SecurityContextHolder.clearContext();
         }
         return true;
     }
@@ -70,6 +75,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
                                 Object handler, Exception ex) throws Exception {
         hostHolder.clear();
-        SecurityContextHolder.clearContext();
+        //拦截器中不再将SecurityContext清理掉
+//        SecurityContextHolder.clearContext();
     }
 }
